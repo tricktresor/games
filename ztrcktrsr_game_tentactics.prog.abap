@@ -849,9 +849,7 @@ CLASS lcl_main IMPLEMENTATION.
 
   METHOD shrink_lines.
 
-    DATA lt_lines_to_delete TYPE STANDARD TABLE OF i.
     FIELD-SYMBOLS <field>   LIKE LINE OF mt_field.
-
 
 *== shrink lines
     LOOP AT mt_field TRANSPORTING NO FIELDS
@@ -864,29 +862,27 @@ CLASS lcl_main IMPLEMENTATION.
            AND s07 IS INITIAL
            AND s08 IS INITIAL
            AND s09 IS INITIAL.
-      APPEND sy-index TO lt_lines_to_delete.
+      DELETE mt_field.
       ADD 10 TO mv_score.
-
     ENDLOOP.
-    CHECK sy-subrc = 0.
-
-    DELETE mt_field
-         WHERE s01 IS INITIAL
-           AND s02 IS INITIAL
-           AND s03 IS INITIAL
-           AND s04 IS INITIAL
-           AND s05 IS INITIAL
-           AND s06 IS INITIAL
-           AND s07 IS INITIAL
-           AND s08 IS INITIAL
-           AND s09 IS INITIAL.
 
     IF mt_field IS INITIAL.
       MESSAGE i000(oo) WITH 'You won! Your Score:' mv_score.
     ELSEIF lines( mt_field ) = 1.
       READ TABLE mt_field ASSIGNING <field> INDEX 1.
       "Check, if last line is empty (except of "next-Button")
-      "todo
+       IF       ( <field>-s01 IS INITIAL OR <field>-s01 = icon_next_object )
+            AND ( <field>-s02 IS INITIAL OR <field>-s02 = icon_next_object )
+            AND ( <field>-s03 IS INITIAL OR <field>-s03 = icon_next_object )
+            AND ( <field>-s04 IS INITIAL OR <field>-s04 = icon_next_object )
+            AND ( <field>-s05 IS INITIAL OR <field>-s05 = icon_next_object )
+            AND ( <field>-s06 IS INITIAL OR <field>-s06 = icon_next_object )
+            AND ( <field>-s07 IS INITIAL OR <field>-s07 = icon_next_object )
+            AND ( <field>-s08 IS INITIAL OR <field>-s08 = icon_next_object )
+            AND ( <field>-s09 IS INITIAL OR <field>-s09 = icon_next_object ).
+         ADD 10 TO mv_score.   
+         MESSAGE i000(oo) WITH 'You won! Your Score:' mv_score.
+       ENDIF.
     ENDIF.
 
   ENDMETHOD.
